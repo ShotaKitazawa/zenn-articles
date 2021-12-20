@@ -8,7 +8,7 @@ published: false
 
 この記事は、[Kubernetes Advent Calendar](https://qiita.com/advent-calendar/2021/kubernetes) 21 日目の記事です。
 
-[reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) という、アプリケーション開発リポジトリにて PR が出るたびに Kubernetes 上に dev 環境を立ち上げるための Kubernetes Operator を自作した話になります。
+[reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) という、アプリケーション開発リポジトリで PR が出るたびに Kubernetes 上に dev 環境を立ち上げるための Kubernetes Operator を自作した話になります。
 
 この記事は、以前 [CloudNative Days Tokyo 2021 プレイベント](https://cloudnativedays.connpass.com/event/226567/) にて `CloudNative Days を支える CI/CD ワークフローの変遷` というタイトルで話したものをより一般的な内容にしました。
 上記発表では「CloudNative Days というイベントの裏方として開発した」ことに焦点を当てた内容となっているため、もしよければ [発表資料](https://speakerdeck.com/shotakitazawa/cd-wakuhurofalsebian-qian) も合わせてご覧ください。
@@ -20,18 +20,18 @@ GitHub 等のリモートリポジトリ上の Kubernetes マニフェストフ�
 * アプリケーションを開発しているリポジトリ (以降 `アプリケーションリポジトリ`) で動作する CI にて、マニフェストを配置しているリポジトリ (以降 `マニフェストリポジトリ`) 上にある該当マニフェストのバージョン情報を書き換える
 * [Argo CD Image Updater](https://github.com/argoproj-labs/argocd-image-updater) を用いて、コンテナレジストリの更新契機でマニフェストリポジトリ上にある該当マニフェストのバージョン情報を書き換える
 
-この方法により「あるブランチの更新契機で、そのブランチに紐づく環境への CD」を実現することができます。
+この方法により「あるブランチの更新契機で、そのブランチに紐づく環境への CD」を実現できます。
 
 しかしながら、上記から一歩進んで「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」というふうに監視対象ブランチが動的に変わる場合、 Argo CD Image Updater では実現できないです。
 
-上記のように動的に新規環境を立ち上げる仕組みは、特に複数人で同じアプリケーションを開発する際に共用利用のステージング環境にマージする前に自分の実装の動作を実際に試す事ができるためとても便利です。 例えば有名な PaaS である Heroku では [Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps) という機能でこれを実現しています。
+上記のように動的に新規環境を立ち上げる仕組みは、特に複数人で同じアプリケーションを開発する際において、共用利用のステージング環境へマージする前に自分の実装の動作を実際に試す事ができるためとても便利です。 例えば有名な PaaS である Heroku では [Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps) という機能でこれを実現しています。
 
 そのため Kubernetes を利用している場合においても同じことを実現したいというのがモチベーションとしてありました。
 
 # reviewapp-operator
 
-reviewapp-operator は 「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」 ことを実現するために、Argo CD と協調して動作します。
-reviewapp-operator の責務は主に 「アプリケーションリポジトリの PR の更新契機でマニフェストリポジトリのマニフェストを作成・削除する」ことであり、実際にマニフェストリポジトリからマニフェストを Kubernetes に適用するのは Argo CD の責務となります。
+reviewapp-operator は「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」ことを実現するために、Argo CD と協調して動作します。
+reviewapp-operator の責務は主に「アプリケーションリポジトリの PR の更新契機でマニフェストリポジトリのマニフェストを作成・削除する」ことであり、実際にマニフェストリポジトリからマニフェストを Kubernetes に適用するのは Argo CD の責務となります。
 
 ![reviewapp-operator の workflow](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/workflow.jpg)
 
@@ -73,7 +73,7 @@ TODO
 
 ## 新機能の実装ネタが思ったよりもある
 
-実は reviewapp-operator を実装するよりも前にも GitHub Actions で reviewapp-operator 相当のものを実現していたのですが ([発表資料](https://speakerdeck.com/shotakitazawa/cd-wakuhurofalsebian-qian)を参照)、「Review Apps 環境を構築・クリーンアップする他に様々な追加機能が欲しくなった際、その開発をちゃんとテスタブルな言語で行いたい」というのが reviewapp-operator を実装するモチベーションの一つとしてありました。
+実は reviewapp-operator を実装するよりも前にも GitHub Actions で reviewapp-operator 相当のものを実現していたのですが ([発表資料](https://speakerdeck.com/shotakitazawa/cd-wakuhurofalsebian-qian)を参照)、「Review Apps 環境を構築・クリーンアップする他に様々な追加機能が欲しくなった際、その開発をちゃんとテスタブルな言語で行いたい」というのが reviewapp-operator を実装するモチベーションの 1 つとしてありました。
 
 個人的にこの理由は「言うても機能追加はそうそうないだろう」と高をくくっていたのですが、いざ運用してみると様々な追加機能が欲しくなりました。
 
@@ -96,14 +96,14 @@ TODO
 
 使い方の項で述べたとおり現状 reviewapp-operator のドキュメントが皆無であるため、チームメンバーであっても reviewapp-operator 周りについて触れないという現状になってしまっていると感じています。
 
-幸い reviewapp-operator で立ち上げる dev 環境のマニフェスト自体を更新したい機会が現状そこまで多くないためその機会が訪れるたびに自分が作業者になれば良いとして回っていますが、この作業が属人化してしまってる現状はあまり健全ではないので是正していきたいです。
+幸い reviewapp-operator で立ち上げる dev 環境のマニフェスト自体を更新したい機会が現状そこまで多くないためその機会が訪れるたびに自分が作業者になれば良いとして回っていますが、この作業が属人化してしまってる現状はあまり健全でないので是正していきたいです。
 
 reviewapp-operator は OSS として公開されているため、他の方にも利用してもらえるよう、ドキュメントや CRD のフィールドに対する description の拡充はできるだけ優先度を高くしてやっていこうと思っています。
 // 本当はこの記事の公開までにドキュメントを整備したかった...orz
 
 ## まとめ
 
-「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」 ことを実現する Kubernetes Operator である [reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) について紹介しました。
-また、reviewapp-operator を複数人で開発されるアプリケーションの開発環境構築に実際に導入してみて、分かったことや感想を書きました。
+「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」ことを実現する Kubernetes Operator である [reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) について紹介しました。
+また、reviewapp-operator を複数人で開発されるアプリケーションの開発環境構築へ実際に導入してみて、分かったことや感想を書きました。
 
 reviewapp-operator は現状 [Dreamkast](https://github.com/cloudnativedaysjp/dreamkast) でのみ利用されていますが、動的に dev 環境を立ち上げるという用途でより汎用的に利用可能なので、引き続き機能開発やドキュメントの充実をしていこうと思っています。

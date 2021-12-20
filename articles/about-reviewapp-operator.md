@@ -8,7 +8,7 @@ published: false
 
 この記事は、[Kubernetes Advent Calendar](https://qiita.com/advent-calendar/2021/kubernetes) 21 日目の記事です。
 
-[reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) という、アプリケーション開発リポジトリで PR が出るたびに Kubernetes 上に dev 環境を立ち上げるための Kubernetes Operator を自作した話になります。
+[reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) という、アプリケーション開発リポジトリへ PR が出るたびに Kubernetes 上で dev 環境を立ち上げるための Kubernetes Operator を自作した話になります。
 
 この記事は、以前 [CloudNative Days Tokyo 2021 プレイベント](https://cloudnativedays.connpass.com/event/226567/) にて `CloudNative Days を支える CI/CD ワークフローの変遷` というタイトルで話したものをより一般的な内容にしました。
 上記発表では「CloudNative Days というイベントの裏方として開発した」ことに焦点を当てた内容となっているため、もしよければ [発表資料](https://speakerdeck.com/shotakitazawa/cd-wakuhurofalsebian-qian) も合わせてご覧ください。
@@ -24,7 +24,7 @@ GitHub 等のリモートリポジトリ上の Kubernetes マニフェストフ�
 
 しかしながら、上記から一歩進んで「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」というふうに監視対象ブランチが動的に変わる場合、 Argo CD Image Updater では実現できないです。
 
-上記のように動的に新規環境を立ち上げる仕組みは、特に複数人で同じアプリケーションを開発する際において、共用利用のステージング環境へマージする前に自分の実装の動作を実際に試す事ができるためとても便利です。 例えば有名な PaaS である Heroku では [Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps) という機能でこれを実現しています。
+上記のように動的に新規環境を立ち上げる仕組みは、特に複数人で同じアプリケーションを開発する際において、共用利用のステージング環境へマージする前に自分の実装の動作を試す事ができるためとても便利です。 例えば有名な PaaS である Heroku では [Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps) という機能でこれを実現しています。
 
 そのため Kubernetes を利用している場合においても同じことを実現したいというのがモチベーションとしてありました。
 

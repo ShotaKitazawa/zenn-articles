@@ -67,8 +67,8 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 ![reviewapp-operator の提供する Custom Resources](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/resources.jpg)
 *reviewapp-operator の提供する Custom Resources*
 
-また、現状 `ReviewAppManager`, `ApplicationTemplate`, `ManifestsTemplate` の値を記述する際に利用できるテンプレートの値は以下があります。
-テンプレートがどのように利用されるかついては [実際の設定例](#実際の設定例) をご覧ください。
+また、現状 `ReviewAppManager`, `ApplicationTemplate`, `ManifestsTemplate` の値を記述する際に利用できるテンプレート変数には以下があります。
+テンプレート変数がどのように利用されるかついては [実際の設定例](#実際の設定例) をご覧ください。
 
 | テンプレート変数名         | 説明                                                                                                                           |
 |:--------------------------:|:------------------------------------------------------------------------------------------------------------------------------:|

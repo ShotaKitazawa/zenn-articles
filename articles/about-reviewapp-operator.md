@@ -1,5 +1,5 @@
 ---
-title: "reviewapp-operator"
+title: "PR が出るたびに Kubernetes 上で dev 環境を立ち上げるための Kubernetes Operator の開発"
 emoji: "⚙"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["kubernetes","operator","CICD","GitOps"]

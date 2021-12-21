@@ -222,6 +222,8 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 [行数が多いのでリンクを貼っておきます](https://github.com/cloudnativedaysjp/dreamkast-infra/blob/501263c85fe05f72ebea7ece0d6d0f8fd75edb49/manifests/reviewapps/dreamkast.yaml#L78-L612)
 :::
 
+![ManifestsTemplate が配置される箇所](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/directory-mt.png)
+
 * 613行目: ManifestsTemplate.spec.candidate
     * ApplicationTemplate.spec.candidate と同様の利用方法
 

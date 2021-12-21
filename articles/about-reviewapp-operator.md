@@ -34,6 +34,7 @@ reviewapp-operator は「アプリケーションリポジトリに PR が出る
 reviewapp-operator の責務は主に「アプリケーションリポジトリの PR の更新契機でマニフェストリポジトリのマニフェストを作成・削除する」ことであり、実際にマニフェストリポジトリからマニフェストを Kubernetes に適用するのは Argo CD の責務となります。
 
 ![reviewapp-operator の workflow](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/workflow.jpg)
+*reviewapp-operator の workflow*
 
 **なお、以降この記事は `reviewapp-operator v0.0.5` を前提に話します。**
 
@@ -64,6 +65,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 | `ManifestsTemplate`   | ユーザが宣言するリソース③。Review Apps 環境を構築するための各種マニフェストファイルのテンプレートを記述するためのリソース。                                                                                                                                                                                                    |
 
 ![reviewapp-operator の提供する Custom Resources](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/resources.jpg)
+*reviewapp-operator の提供する Custom Resources*
 
 また、現状 `ReviewAppManager`, `ApplicationTemplate`, `ManifestsTemplate` の値を記述する際に利用できるテンプレートの値は以下があります。
 テンプレートがどのように利用されるかついては [実際の設定例](#実際の設定例) をご覧ください。
@@ -158,6 +160,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 :::
 
 ![Review Apps を実現するディレクトリ構成](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/directory.png)
+*Review Apps を実現するディレクトリ構成*
 
 * 42~43行目: ReviewAppManager.spec.variables
     * テンプレート変数として `{{.Variables.<key>}}` で呼び出し可能な KeyValue を定義
@@ -199,6 +202,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 :::
 
 ![ApplicationTemplate が配置される箇所](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/directory-at.png)
+*ApplicationTemplate が配置される箇所*
 
 * 71行目: ApplicationTemplate.spec.candidate
     * アプリケーションリポジトリの PR に `candidate-template` というラベルが付いている場合、 ApplicationTemplate.spec.stable の代わりにこちらのテンプレートが利用される
@@ -223,6 +227,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 :::
 
 ![ManifestsTemplate が配置される箇所](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/directory-mt.png)
+*ManifestsTemplate が配置される箇所*
 
 * 613行目: ManifestsTemplate.spec.candidate
     * ApplicationTemplate.spec.candidate と同様の利用方法

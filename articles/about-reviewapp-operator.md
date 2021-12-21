@@ -290,6 +290,6 @@ reviewapp-operator は OSS として公開されているため、他の方に�
 「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」ことを実現する Kubernetes Operator である [reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) について、開発したモチベーションやその使い方を紹介しました。
 また、reviewapp-operator を複数人で開発されるアプリケーションの開発環境構築へ実際に導入してみて、分かったことや感想を書きました。
 
-CloudNative Days の特定のユースケースというよりはより一般的に利用できるものとして実装したつもりなので、この記事を読んでくれた方が実際にそう感じてもらえたらならば嬉しいです。
+CloudNative Days の特定のユースケースというよりはより汎用的に利用できるものとして実装したつもりなので、この記事を読んでくれた方が実際にそう感じてもらえたらならば幸いです。
 
-reviewapp-operator は現状 [Dreamkast](https://github.com/cloudnativedaysjp/dreamkast) でのみ利用されていますが、動的に dev 環境を立ち上げるという用途でより汎用的に利用可能なので、引き続き機能開発を勧めつつどなたにでも reviewapp-operator を使ってもらえるようドキュメントを充実させていこうと思っています。
+reviewapp-operator は現状 [Dreamkast](https://github.com/cloudnativedaysjp/dreamkast) でのみ利用されていますが、上述したとおり動的に dev 環境を立ち上げるという用途でより汎用的に利用可能なので、引き続き機能開発を勧めつつどなたにでも reviewapp-operator を使ってもらえるようドキュメントを充実させていこうと思っています。

@@ -3,7 +3,7 @@ title: "reviewapp-operator"
 emoji: "⚙"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["kubernetes","operator","CICD","GitOps"]
-published: false
+published: true
 ---
 
 この記事は、[Kubernetes Advent Calendar](https://qiita.com/advent-calendar/2021/kubernetes) 21 日目の記事です。

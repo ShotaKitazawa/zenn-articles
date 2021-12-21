@@ -30,13 +30,13 @@ GitHub 等のリモートリポジトリ上の Kubernetes マニフェストフ�
 
 # reviewapp-operator
 
-reviewapp-operator は「アプリケーションリポジトリに PR が出るたびに dev 用の新規環境 (以下、Review Apps 環境) を立ち上げる」ことを実現するために、Argo CD と協調して動作します。
+[reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) は「アプリケーションリポジトリに PR が出るたびに dev 用の新規環境 (以下、Review Apps 環境) を立ち上げる」ことを実現するために、Argo CD と協調して動作します。
 reviewapp-operator の責務は主に「アプリケーションリポジトリの PR の更新契機でマニフェストリポジトリのマニフェストを作成・削除する」ことであり、実際にマニフェストリポジトリからマニフェストを Kubernetes に適用するのは Argo CD の責務となります。
 
 ![reviewapp-operator の workflow](https://raw.githubusercontent.com/ShotaKitazawa/zenn-articles/master/images/about-reviewapp-operator/workflow.jpg)
 *reviewapp-operator の workflow*
 
-**なお、以降この記事は `reviewapp-operator v0.0.5` を前提に話します。**
+**なお、以降この記事は [reviewapp-operator v0.0.5](https://github.com/cloudnativedaysjp/reviewapp-operator/releases/tag/v0.0.5) を前提に話します。**
 
 ## 使い方
 

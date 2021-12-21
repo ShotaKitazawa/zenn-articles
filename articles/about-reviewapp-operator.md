@@ -139,7 +139,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
     * マニフェストリポジトリのどのパスにマニフェストを配置するかを記述するフィールド
     * テンプレート変数を記述可能
     * ReviewAppManager.spec.infraRepoConfig.manifests には複数個の `ManifestsTemplate` の指定が、ReviewAppManager.spec.infraRepoConfig.argocdApp には 1 つの `ApplicationTemplate` の指定がそれぞれ可能
-    * **`ReviewAppManager.spec.infraRepoConfig.argocdApp.filepath` の dirname を監視する Argo CD Application を事前に定義しておくことで以下の図のように Argo CD Application を多段で管理することができ、Review Apps 環境を実現可能**
+    * **`ReviewAppManager.spec.infraRepoConfig.argocdApp.filepath` の dirname を監視する Argo CD Application を事前に定義しておくことで以下の図のように Argo CD Application を多段で管理でき Review Apps 環境の構築を実現可能**
 
 :::details クリックで展開
 ```yaml

@@ -243,7 +243,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 上記で紹介した reviewapp-operator は 2021/10 あたりから [Dreamkast](https://github.com/cloudnativedaysjp/dreamkast) というオンラインカンファレンスプラットフォームの開発環境を管理するのに利用されています。
 ここからは、reviewapp-operator を実際に運用してみて分かったことやその感想などを書いていきます。
 
-## ManifestsTemplate リソースのマニフェストが非常に読みにくい
+### ManifestsTemplate リソースのマニフェストが非常に読みにくい
 
 [実際の設定例](#実際の設定例) にて実際の ManifestsTemplate の書きっぷりをお見せしましたが、string なフィールドにマニフェストを列挙する形になっており非常に読みにくいです。
 この問題を解決するために、以下の方針を考えています。
@@ -254,7 +254,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 
 なおこの問題は [#50 ManifestsTemplate, ApplicationTemplate が見にくいのをどうにかする](https://github.com/cloudnativedaysjp/reviewapp-operator/issues/50) という Issue で管理しています。
 
-## 新機能の実装ネタが思ったよりもある
+### 新機能の実装ネタが思ったよりもある
 
 実は reviewapp-operator を実装するよりも前にも GitHub Actions で reviewapp-operator 相当のものを実現していたのですが ([発表資料](https://speakerdeck.com/shotakitazawa/cd-wakuhurofalsebian-qian)を参照)、「Review Apps 環境を構築・クリーンアップする他に様々な追加機能が欲しくなった際、その開発をちゃんとテスタブルな言語で行いたい」というのが reviewapp-operator を実装するモチベーションの 1 つとしてありました。
 
@@ -266,7 +266,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 
 機能の案は [GitHub Issue](https://github.com/cloudnativedaysjp/reviewapp-operator/issues) で管理しているため、自分の手が空いたときにやりたいもの順で実装していこうと思っています。
 
-## 統合テストに時間がかかる
+### 統合テストに時間がかかる
 
 これは reviewapp-operator の話というよりは、Kubernetes Operator の「Custom Resource オブジェクトの状態を監視し、更新などを契機に該当 Custom Resource オブジェクトや外部リソース (例. GitHub PullRequest) を CRUD する」という、宣言的 API を実現するための実装の難しさの話です。
 
@@ -276,7 +276,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 
 このあたりについて、今の所「短すぎず長すぎないタイムアウトの時間を見つける」以上の案がないので、もし何か良い手があればコメント等で教えていただきたいです。
 
-## 「reviewapp-operator 何もわからん」
+### 「reviewapp-operator 何もわからん」
 
 使い方の項で述べたとおり現状 reviewapp-operator のドキュメントが皆無であるため、チームメンバーであっても reviewapp-operator 周りについて触れないという現状になってしまっていると感じています。
 
@@ -285,7 +285,7 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 reviewapp-operator は OSS として公開されているため、他の方にも利用してもらえるよう、ドキュメントや CRD のフィールドに対する description の拡充はできるだけ優先度を高くしてやっていこうと思っています。
 // 本当はこの記事の公開までにドキュメントを整備したかった...orz
 
-## 最後に
+# 最後に
 
 「アプリケーションリポジトリに PR が出るたびに新規 Namespace を作成しそこに新規環境を立ち上げる」ことを実現する Kubernetes Operator である [reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) について、開発したモチベーションやその使い方を紹介しました。
 また、reviewapp-operator を複数人で開発されるアプリケーションの開発環境構築へ実際に導入してみて、分かったことや感想を書きました。

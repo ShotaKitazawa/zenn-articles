@@ -1,0 +1,11 @@
+title: "Kubernetes on KubeVirt"
+summary: "KubeVirt の何がが良いか等の個人的な見解も交えた Kubernetes on KubeVirt を構築するための覚え書きです。"
+topics: ["kubernetes","kubevirt"]
+published: false
+price: 0 # 有料の場合200〜5000
+chapters:
+- 01-intro.md
+- 02-hostcluster.md
+- 03-networking.md
+- 04-image.md
+- 05-guestcluster.md

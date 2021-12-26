@@ -6,7 +6,7 @@ topics: ["kubernetes","operator","CICD","GitOps"]
 published: true
 ---
 
-この記事は、[Kubernetes Advent Calendar](https://qiita.com/advent-calendar/2021/kubernetes) 21 日目の記事です。
+この記事は、[Kubernetes Advent Calendar 2021](https://qiita.com/advent-calendar/2021/kubernetes) 21 日目の記事です。
 
 [reviewapp-operator](https://github.com/cloudnativedaysjp/reviewapp-operator) という、アプリケーション開発リポジトリへ PR が出るたびに Kubernetes 上で dev 環境を立ち上げるための Kubernetes Operator を自作した話になります。
 

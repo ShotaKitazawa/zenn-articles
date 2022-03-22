@@ -250,7 +250,6 @@ reviewapp-operator は以下の 4 つの Custom Resource を提供します。
 
 * 複数の yaml 形式のマニフェストファイルを引数に与えることで ManifestsTemplate リソースを出力する CLI ツールを実装
 * Argo CD の [Config Management Plugins](https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/) を利用して、Argo CD による apply の前に上記 CLI ツールで ManifestsTemplate リソースの記述されたマニフェストを生成
-    * ちなみに Argo CD v2.2 で Config Management Plugins V2 がリリースされ、 `ConfigManagementPlugin` カスタムリソースとして設定を記述できるようになった。([参考](https://blog.argoproj.io/argo-cd-v2-2-release-candidate-4e16e985b486))
 
 なおこの問題は [#50 ManifestsTemplate, ApplicationTemplate が見にくいのをどうにかする](https://github.com/cloudnativedaysjp/reviewapp-operator/issues/50) という Issue で管理しています。
 

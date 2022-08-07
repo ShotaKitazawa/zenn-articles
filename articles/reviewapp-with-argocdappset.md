@@ -1,5 +1,5 @@
 ---
-title: "ArgoCD ApplicationSet で実現する Review Apps"
+title: "Argo CD ApplicationSet で実現する Review Apps"
 emoji: "⚙"
 type: "tech"
 topics: ["kubernetes","argocd","CICD","GitOps"]
@@ -10,20 +10,20 @@ published: true
 
 ## TL;DR
 
-* ArgoCD ApplicationSet Controller の [Pull Request Generator](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Pull-Request/) 機能を使った
-* Review App 環境ごとに変わる変数を設定するために ArgoCD Plugin と Kustomize を駆使した
+* Argo CD ApplicationSet Controller の [Pull Request Generator](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Pull-Request/) 機能を使った
+* Review App 環境ごとに変わる変数を設定するために Argo CD Plugin と Kustomize を駆使した
 
 ## 背景
 
 背景とこの記事で実現したいことについては [以前の記事](https://zenn.dev/kanatakita/articles/about-reviewapp-operator#%E8%83%8C%E6%99%AF) と同様のため、ここでは省略します。
 
-## ArgoCD ApplicationSet Controller
+## Argo CD ApplicationSet Controller
 
-ArgoCD ApplicationSet は複数の ArgoCD Application をまとめて管理できる機能です。
+Argo CD ApplicationSet は複数の Argo CD Application をまとめて管理できる機能です。
 
 ApplicationSet の CustomResource スキーマは大きく分けて `Generators` と `Template fields` の 2 つに分かれており、 Generators の出力の数だけ Template fields に書かれた Application リソースのマニフェストを適用するというのが大まかな流れになります。
 
-[`Cluster Generator`](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Cluster/) をもとに具体例をあげると、以下のような ApplicationSet マニフェストを適用すると ArgoCD 管理下のクラスタの数だけ Application リソースが作成されることになります。
+[`Cluster Generator`](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Cluster/) をもとに具体例をあげると、以下のような ApplicationSet マニフェストを適用すると Argo CD 管理下のクラスタの数だけ Application リソースが作成されることになります。
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -57,10 +57,113 @@ spec:
 
 例えば「Review App 環境ごとに異なる FQDN で Ingress リソースを作成する」ことがこの方法だけだと実現できないです。
 
-## ArgoCD Plugin + Kustomize replacements
+## Argo CD Plugin + Kustomize replacements
+
+上記を実現する方法を探っていると、Argo CD のリポジトリ内に[まさにこの課題について言及している Discussion](https://github.com/argoproj/argo-cd/discussions/9042) を見つけました。
+つまり、 Kustomize の `configMapGenerator` と `replacements` の機能を使うことでマニフェストの任意のフィールドを書き換えれるようです。
+
+ただ、 Argo CD Application のサポートしている [kustomize](https://argo-cd.readthedocs.io/en/stable/user-guide/kustomize/) の機能を見る限り、この kustomize に環境変数を与えることが出来ません。
+
+これを解決するために、 [Argo CD Plugins](https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/) の機構を利用して以下のように「任意の環境変数を渡せる kustomize plugin」を定義しました。
+
+* 参考: [実際の定義箇所](https://github.com/cloudnativedaysjp/dreamkast-infra/blob/1a19e187a444744672a7cb26c1d8131b7cffef90/manifests/argocd/overlays/dev/argocd-cm.yaml#L25-L37)
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  configManagementPlugins: |
+    - name: kustomize-with-replacements
+      init:
+        command: ["bash", "-euxc"]
+        args:
+        - export IFS=",";
+          for image in ${ARGOCD_ENV_IMAGES}; do
+            kustomize edit set image $image;
+          done;
+          kustomize edit set namespace $ARGOCD_ENV_NAMESPACE;
+      generate:
+        command: ["kustomize", "build"]
+      lockRepo: true
+```
+
+ApplicationSet リソースを宣言するマニフェストにて、この Plugin を利用するよう以下のように記述します。
+
+* 参考: [実際の定義箇所](https://github.com/cloudnativedaysjp/dreamkast-infra/blob/1a19e187a444744672a7cb26c1d8131b7cffef90/manifests/reviewapps/dreamkast-dk.yaml#L30-L40)
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: test
+spec:
+  generators: (snip)
+  template:
+    metadata:
+      name: 'dreamkast-dk-{{number}}'
+    spec:
+      source:
+        repoURL: https://github.com/cloudnativedaysjp/dreamkast-infra.git
+        targetRevision: main
+        path: manifests/app/dreamkast/overlays/development/template-dk
+        plugin:
+          name: kustomize-with-replacements
+          env:
+            - name: FQDN
+              value: 'dreamkast-dk-{{number}}.dev.cloudnativedays.jp'
+            - name: NAMESPACE
+              value: 'dreamkast-dk-{{number}}'
+            - name: IMAGES
+              value: >-
+                dreamkast-ecs=607167088920.dkr.ecr.ap-northeast-1.amazonaws.com/dreamkast-ecs:{{head_sha}},
+                dreamkast-ui=607167088920.dkr.ecr.ap-northeast-1.amazonaws.com/dreamkast-ui:main
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'dreamkast-dk-{{number}}'
+```
+
+上記のようにマニフェストを記述することで、該当の ApplicationSet から生成される Application 毎に異なる変数 (例えば. `FQDN='dreamkast-dk-{{number}}.dev.cloudnativedays.jp'`) を kustomize 実行時の環境変数として設定することが出来るようになりました。
+
+実際にこの Application が読み込む先の kustomization.yaml に以下のように `configMapGenerator` と `replacements` を記述することで、Review App として PR 毎に適用されるマニフェストの任意のフィールドを任意の値に更新することが出来ます。
+
+* 参考: [実際の定義箇所](https://github.com/cloudnativedaysjp/dreamkast-infra/blob/1a19e187a444744672a7cb26c1d8131b7cffef90/manifests/app/dreamkast/overlays/development/template-dk/kustomization.yaml#L17-L27)
+
+```yaml
+# in kustomization.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+- envs:
+  - .env
+  name: replacement-rules
+replacements:
+- path: .replacement_ns.yaml
+- path: .replacement_ingress-hostname.yaml
+
+# in .env : 以下に列挙した環境変数から `replacement-rules` という name の ConfigMap を生成
+ARGOCD_ENV_NAMESPACE
+ARGOCD_ENV_FQDN
+
+# in .replacement_ns.yaml : Namespace 
+source:
+  version: v1
+  kind: ConfigMap
+  name: replacement-rules
+  fieldPath: data.ARGOCD_ENV_NAMESPACE
+targets:
+- select:
+    kind: Namespace
+    name: __REPLACEMENT__
+  fieldPaths:
+    - metadata.name
+```
 
 
 
+注意点として Argo CD 2.4 以上から、この方法で Application リソース側で指定した環境変数に `ARGOCD_ENV_` というプレフィックスが付きます。この Review App の仕組みを導入している https://github.com/cloudnativedaysjp/dreamkast-infra でもこの記事を書いている今現在 Argo CD 2.4 以上を利用しているため、Plugin 内で環境変数を参照する際は上記のように `ARGOCD_ENV_` プレフィックスを付与しています。
 
 
 ## まとめ

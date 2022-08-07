@@ -53,14 +53,14 @@ spec:
 
 また、Review App 対象の GitHub リポジトリに [Webhook の設定](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Pull-Request/#webhook-configuration) をすることで Pull Request の作成や削除などのイベントが起きるとすぐに Review App 環境も更新できます。
 
-これを用いることで Pull Request 毎に Review App 環境を構築できるようになりました。しかしこの方法には **Review App 環境毎に異なる値をマニフェストに与えることができない** 課題点があります。
+これを用いることで Pull Request 毎に Review App 環境を構築できるようになりました。しかしこの方法には **Review App 環境毎に異なる値をマニフェストに与えることができない** という課題点があります。
 
 例えば「Review App 環境ごとに異なる FQDN で Ingress リソースを作成する」ことがこの方法だけだと実現できないです。
 
 ## Argo CD Plugin + Kustomize replacements
 
 上記を実現する方法を探っていると、Argo CD のリポジトリ内に[まさにこの課題について言及している Discussion](https://github.com/argoproj/argo-cd/discussions/9042) を見つけました。
-つまり、 Kustomize の `configMapGenerator` と `replacements` の機能を使うことでマニフェストの任意のフィールドを書き換えれるようです。
+つまり、 Kustomize の `configMapGenerator` と `replacements` の機能を使うことでマニフェストの任意のフィールドを書き換えられるようです。
 
 ただ、 Argo CD Application のサポートしている [kustomize](https://argo-cd.readthedocs.io/en/stable/user-guide/kustomize/) の機能を見る限り、この kustomize に環境変数を与えることが出来ません。
 
@@ -147,7 +147,7 @@ replacements:
 ARGOCD_ENV_NAMESPACE
 ARGOCD_ENV_FQDN
 
-# in .replacement_ns.yaml : Namespace 
+# in .replacement_ns.yaml : Namespace の metadata.name を ConfigMap `replacement-rules` の data.ARGOCD_ENV_NAMESPACE の値に置換する
 source:
   version: v1
   kind: ConfigMap
@@ -161,9 +161,7 @@ targets:
     - metadata.name
 ```
 
-
-
-注意点として Argo CD 2.4 以上から、この方法で Application リソース側で指定した環境変数に `ARGOCD_ENV_` というプレフィックスが付きます。この Review App の仕組みを導入している https://github.com/cloudnativedaysjp/dreamkast-infra でもこの記事を書いている今現在 Argo CD 2.4 以上を利用しているため、Plugin 内で環境変数を参照する際は上記のように `ARGOCD_ENV_` プレフィックスを付与しています。
+注意点として Argo CD 2.4 以上から、この方法で Application リソース側にて指定した環境変数に `ARGOCD_ENV_` というプレフィックスが付きます。この Review App の仕組みを導入している https://github.com/cloudnativedaysjp/dreamkast-infra でもこの記事を書いている今現在 Argo CD 2.4 以上を利用しているため、Plugin 内で環境変数を参照する際は上記のように `ARGOCD_ENV_` プレフィックスを付与しています。
 
 
 ## まとめ

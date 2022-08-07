@@ -19,9 +19,9 @@ published: true
 
 ## ArgoCD ApplicationSet Controller
 
-ArgoCD ApplicationSet は複数の ArgoCD Application をまとめて管理することができる機能です。
+ArgoCD ApplicationSet は複数の ArgoCD Application をまとめて管理できる機能です。
 
-ApplicationSet の CustomResource スキーマは大きく分けて `Generators` と `Template fields` の2つに分かれており、 Generators の出力の数だけ Template fields に書かれた Application リソースのマニフェストを適用するというのが大まかな流れになります。
+ApplicationSet の CustomResource スキーマは大きく分けて `Generators` と `Template fields` の 2 つに分かれており、 Generators の出力の数だけ Template fields に書かれた Application リソースのマニフェストを適用するというのが大まかな流れになります。
 
 [`Cluster Generator`](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Cluster/) をもとに具体例をあげると、以下のような ApplicationSet マニフェストを適用すると ArgoCD 管理下のクラスタの数だけ Application リソースが作成されることになります。
 
@@ -49,13 +49,13 @@ spec:
 
 ## Pull Request Generator
 
-[Pull Request Generator](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Pull-Request/) は Generators の一種で、これを利用すると GitHub などの SCMaaS における Pull Request の数だけ Application リソースを生成することができます。
+[Pull Request Generator](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Pull-Request/) は Generators の一種で、これを利用すると GitHub などの SCMaaS における Pull Request の数だけ Application リソースを生成できます。
 
-また、Review App 対象の GitHub リポジトリに [Webhook の設定](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Pull-Request/#webhook-configuration) をすることで Pull Request の作成や削除などのイベントが起きるとすぐに Review App 環境も更新することができます。
+また、Review App 対象の GitHub リポジトリに [Webhook の設定](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Pull-Request/#webhook-configuration) をすることで Pull Request の作成や削除などのイベントが起きるとすぐに Review App 環境も更新できます。
 
-これを用いることで Pull Request 毎に Review App 環境を構築することができるようになりました。しかしこの方法には **Review App 環境毎に異なる値をマニフェストに与えることができない** 課題点があります。
+これを用いることで Pull Request 毎に Review App 環境を構築できるようになりました。しかしこの方法には **Review App 環境毎に異なる値をマニフェストに与えることができない** 課題点があります。
 
-例えば「Review App 環境ごとに異なる FQDN で Ingress リソースを作成する」ことがこの方法だけだと実現することができないです。
+例えば「Review App 環境ごとに異なる FQDN で Ingress リソースを作成する」ことがこの方法だけだと実現できないです。
 
 ## ArgoCD Plugin + Kustomize replacements
 

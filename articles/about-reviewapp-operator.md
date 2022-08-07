@@ -2,7 +2,7 @@
 title: "PR が出るたびに Kubernetes 上で dev 環境を立ち上げるための Kubernetes Operator"
 emoji: "⚙"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["kubernetes",""operator","CICD","GitOps"]
+topics: ["kubernetes","operator","CICD","GitOps"]
 published: true
 ---
 

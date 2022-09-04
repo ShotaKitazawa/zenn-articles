@@ -31,6 +31,13 @@ Socket Mode について詳しくは [公式ドキュメント](https://api.slac
 Go 言語で Slack Bot を開発する際に真っ先に上がるライブラリは [slack-go/slack](https://github.com/slack-go/slack) だと思います。私も Go 言語で Slack Bot を開発する際はこれを用います。
 
 [slack-go/slack](https://github.com/slack-go/slack) は上述した Socket Mode の利用をサポートしています。
+しかし、[このサンプルコード](https://github.com/slack-go/slack/blob/1edf0c7384de52bdeca7a2d6c4ad247d59c683e6/examples/socketmode/socketmode.go#L49-L147) のように case 文で条件分岐してそれぞれの処理を記述しなければいけなく、可読性が低いです。
+
+TODO
+
+また、 [slack-go/slack](https://github.com/slack-go/slack) の提供するハンドラの機構では、 Web アプリケーションで言うところのミドルウェアを挟み込むことができません。
+
+そのため私は middleware パッケージを切って
 
 ## 開発で意識すること
 
@@ -50,18 +57,19 @@ Go 言語で Slack Bot を開発する際に真っ先に上がるライブラリ
 
 そのため私は、以下の構成で Slack Bot を実装することが多いです。
 
-| パッケージ名 | 役割                                                                                                                        |
-|:------------:|:---------------------------------------------------------------------------------------------------------------------------:|
-| `controller` | 入力に対するバリデーションや必要な値の取得を行う、十分単純な処理しか行わない場合は service を経由せずに外部問い合わせを行う |
-| `service`    | 複数の外部問い合わせや、内部の詳細なロジックを記述する                                                                      |
-| `view`       | Slack に送信する json を組み立てる                                                                                          |
-| `model`      | DTO やグローバル変数の配置先                                                                                                |
-| others       | 外部への問い合わせを行うためのパッケージ (例: [`gitcommand`](TODO), [`githubapi`](TODO))                                    |
+| パッケージ名                                                                                  | 役割                                                                                                                                                                                                                      |
+|:---------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| [`controller`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/controller) | 入力に対するバリデーションや必要な値の取得を行う、十分単純な処理しか行わない場合は service を経由せずに外部問い合わせを行う                                                                                               |
+| [`middleware`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/middleware) | [github.com/slack-go/slack の提供するハンドラ機能を利用する](TODO) にて上述                                                                                                                                               |
+| [`service`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/service)       | 複数の外部問い合わせや、内部の詳細なロジックを記述する                                                                                                                                                                    |
+| [`view`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/view)             | Slack に送信する json を組み立てる                                                                                                                                                                                        |
+| [`model`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/model)           | DTO やグローバル変数の配置先                                                                                                                                                                                              |
+| others                                                                                        | 外部への問い合わせを行うためのパッケージ (例: [`gitcommand`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/gitcommand), [`githubapi`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/githubapi)) |
 
 ![](TODO)
 
-なお、具体例で示したコードでは外部問い合わせを行うパッケージ内で interface を定義し、 それらのパッケージを利用している controller や service パッケージの構造体に対しては main から DI しています。
-これにより controller や service に少し複雑なロジックを書きたくなったときにモックを利用したユニットテストをすることが可能になるため、自分は外部問い合わせを行うパッケージに対しては常に interface を提供し抽象化するようにしています。
+なお、具体例で示したコードでは、外部問い合わせを行うパッケージ内で interface を定義しそれらのパッケージを利用している controller や service パッケージの構造体に対しては main から DI しています。
+これにより controller や service に少し複雑なロジックを書きたくなったときにモックを利用し外部に依存しないユニットテストをすることが可能になります。そのため自分は外部問い合わせを行うパッケージに対しては常に interface を提供し抽象化するようにしています。
 
 ### Bot から送るメッセージは Bot を動作させなくても分かるようにする
 

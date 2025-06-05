@@ -3,7 +3,7 @@ title: "私的 Go 言語での SlackBot 開発のベストプラクティス 202
 emoji: "⚡️"
 type: "tech"
 topics: ["slackbot","go"]
-published: true
+published: false
 ---
 
 個人やコミュニティ活動等で Go 言語を用いて何回か Slack Bot を作り個人的にしっくりと来た開発方法を確立できたため、備忘録として残します。
@@ -42,6 +42,7 @@ TODO
 ## 開発で意識すること
 
 この章では開発で意識することのうち、特にツールに依存しない一般的な話について記述します。
+Slack Bot に関係する話であったりなかったりします。
 
 ### パッケージ構成はシンプルに
 
@@ -49,22 +50,15 @@ TODO
 そのためアプリケーションのどこで何をやっているかを明確にするために、ペライチのソースコードではなく、ある程度パッケージ分けは必要になります。
 しかしながら世の中にあるソフトウェアアーキテクチャのパターンは様々で、中には機能の拡張性やテスタビリティを上げる代わりに複雑な構成であるパターンも数多く存在します。
 
-個人的な意見として、 Slack Bot に実装する機能は以下の特性を持つことが大半です。
-
-* 過度なモデル化の必要がない
-* TODO
-* 
-
-そのため私は、以下の構成で Slack Bot を実装することが多いです。
+複雑すぎず、私は、以下の構成で Slack Bot を実装することが多いです。
 
 | パッケージ名                                                                                  | 役割                                                                                                                                                                                                                      |
 |:---------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | [`controller`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/controller) | 入力に対するバリデーションや必要な値の取得を行う、十分単純な処理しか行わない場合は service を経由せずに外部問い合わせを行う                                                                                               |
-| [`middleware`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/middleware) | [github.com/slack-go/slack の提供するハンドラ機能を利用する](TODO) にて上述                                                                                                                                               |
 | [`service`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/service)       | 複数の外部問い合わせや、内部の詳細なロジックを記述する                                                                                                                                                                    |
 | [`view`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/view)             | Slack に送信する json を組み立てる                                                                                                                                                                                        |
 | [`model`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/model)           | DTO やグローバル変数の配置先                                                                                                                                                                                              |
-| others                                                                                        | 外部への問い合わせを行うためのパッケージ (例: [`gitcommand`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/gitcommand), [`githubapi`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/githubapi)) |
+| [`infrastructure`](https://github.com/cloudnativedaysjp/chatbot/tree/main/pkg/chatbot/infrastructure) | 外部への問い合わせを行うためのクライアントとそのインタフェースを配置したパッケージ |
 
 ![](TODO)
 
@@ -100,4 +94,5 @@ TBW
 ## まとめ
 
 以上が個人的な Go 言語での Slack Bot 開発のベストプラクティスでした。
+
 もっとこうした方が良いよ等の意見があればぜひコメントしてくださると幸いです。
